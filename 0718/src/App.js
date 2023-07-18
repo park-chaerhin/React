@@ -5,8 +5,7 @@ import Subject from './components/Subject'
 import TOD from './components/TOD'
 import Content from './components/Content'
 
-/* 
-//함수방식 
+/*  //함수방식 
 function Subject(){
   return(
     <header>
@@ -38,8 +37,7 @@ function Content(){
 }
 */
 
-/* 
-// class방식 
+/*  // class방식 
 class Subject extends Component{  
   render(){
       return(
