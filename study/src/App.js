@@ -30,6 +30,8 @@ class App extends Component {
       _title = this.state.contents[0].title;
       _desc = this.state.contents[0].desc;
     }
+    
+    console.log('render', this) //this= render함수가 속해있는 component자신
 
     return (
       <div className="App">
