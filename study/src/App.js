@@ -10,6 +10,7 @@ class App extends Component {
     super(props);
     this.state = {
       mode: 'welcome',
+      selected_content_id:2,
       subject:{title: 'WEB', sub: 'World Wide Web'},
       welcome: {title: 'welcome', desc:'hello React'},
       contents: [
@@ -27,8 +28,17 @@ class App extends Component {
       _title = this.state.welcome.title;
       _desc = this.state.welcome.desc;
     }else if(this.state.mode === 'read'){
-      _title = this.state.contents[0].title;
-      _desc = this.state.contents[0].desc;
+      var i = 0;
+      while(i < this.state.contents.length){
+        var data = this.state.contents[i];
+        if(data.id === this.state.selected_content_id){
+          _title = data.title;
+          _desc = data.desc;
+          break;
+        }
+        i++
+      }
+      
     }
     
     console.log('render', this) //this= render함수가 속해있는 component자신
@@ -60,7 +70,15 @@ class App extends Component {
           {this.state.subject.sub}
         </header> */}
 
-        <TOC data={this.state.contents}></TOC>
+        <TOC onChangePage={function(){
+          // alert('toc')
+          this.setState({
+            mode:'welcome',
+            selected_content_id:0,
+          })
+        }.bind(this)} 
+        data={this.state.contents}
+        ></TOC>
         
         <Content title={_title} desc={_desc}></Content>
       </div>
