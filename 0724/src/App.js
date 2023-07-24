@@ -144,11 +144,11 @@ function App (){
 
       <hr />
       
-      <FuncComp initNumber={2} initTime={0}></FuncComp>
+      {/* <FuncComp initNumber={2} initTime={0}></FuncComp> */}
       {/* {classCompShow? true : false} = 삼항연산~*/}
       {classCompShow? <ClassComp initNumber={2}></ClassComp> : null}
 
-      {funcCompShow? <funcComp initNumber={2}></funcComp> : null}
+      {funcCompShow? <FuncComp initNumber={2}></FuncComp> : null}
     </div>
   );
 }
