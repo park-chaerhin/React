@@ -11,12 +11,13 @@ class TOC extends Component{
             lists.push(
             <li key={data[i].id}>
                 <a 
-                data-id={data[i].id}
-                onClick={function(e){
-                    e.preventDefault();
-                    this.props.onChangePage();
-                }.bind(this)} 
-                href={"/content/"+data[i].id}> {data[i].title} </a>
+                    data-id={data[i].id}
+                    onClick={function(e){
+                        e.preventDefault();
+                        this.props.onChangePage(e.target.dataset.id);
+                    }.bind(this)} 
+                    href={"/content/"+data[i].id}
+                > {data[i].title} </a>
             </li>)
             i++
         }

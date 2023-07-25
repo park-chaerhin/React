@@ -9,9 +9,9 @@ class App extends Component {
   constructor(props){
     super(props);
     this.state = {
-      mode: 'welcome',
-      selected_content_id:2,
-      subject:{title: 'WEB', sub: 'World Wide Web'},
+      mode: 'read',
+      selected_content_id:1,
+      subject:{title: 'HI', sub: 'React Start'},
       welcome: {title: 'welcome', desc:'hello React'},
       contents: [
         {id:1, title: 'HTML', desc: 'HTML is for information ...'},
@@ -49,9 +49,11 @@ class App extends Component {
         <Subject 
           title={this.state.subject.title} 
           sub={this.state.subject.sub}
-          onChangePage={function(){
-            //alert('hi')
-            this.setState({mode:'read'})
+          onChangePage={function(id){
+            this.setState({
+              mode:'welcome',
+              selected_content_id: id,
+            })
           }.bind(this)}
         >
         </Subject>
@@ -63,21 +65,21 @@ class App extends Component {
               e.preventDefault();
               // this.state.mode = 'welcome' ;
               this.setState({
-                mode: 'read'
+                mode: 'welcome'
               })
             }.bind(this)}>{this.state.subject.title}</a>
           </h1>
           {this.state.subject.sub}
         </header> */}
 
-        <TOC onChangePage={function(){
-          // alert('toc')
-          this.setState({
-            mode:'welcome',
-            selected_content_id:0,
-          })
-        }.bind(this)} 
-        data={this.state.contents}
+        <TOC 
+          onChangePage={function(id){
+            this.setState({
+              mode:'read',
+              selected_content_id: Number(id),
+            })
+          }.bind(this)} 
+          data={this.state.contents}
         ></TOC>
         
         <Content title={_title} desc={_desc}></Content>
