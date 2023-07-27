@@ -4,7 +4,8 @@ import {Component} from 'react';
 import TOC from './components/TOC'
 import Subject from './components/Subject'
 import Control from './components/Control'
-import Content from './components/Content'
+import ReadContent from './components/ReadContent'
+import CreateContent from './components/CreateContent';
 
 class App extends Component {
   constructor(props){
@@ -24,11 +25,13 @@ class App extends Component {
   render(){
     console.log('App Render');
 
-    var _title, _desc = null;
+    var _title, _desc, _article = null;
+    // mode에 따라 article의 내용 바뀜
     if(this.state.mode === 'welcome'){
       _title = this.state.welcome.title;
       _desc = this.state.welcome.desc;
-    }else if(this.state.mode === 'read'){
+      _article = <ReadContent title={_title} desc={_desc}></ReadContent>
+    } else if(this.state.mode === 'read'){
       var i = 0;
       while(i < this.state.contents.length){
         var data = this.state.contents[i];
@@ -39,7 +42,9 @@ class App extends Component {
         }
         i++
       }
-      
+      _article = <ReadContent title={_title} desc={_desc}></ReadContent>
+    } else if(this.state.mode === 'create'){
+      _article = <CreateContent></CreateContent>
     }
     
     console.log('render', this) //this= render함수가 속해있는 component자신
@@ -90,7 +95,9 @@ class App extends Component {
             })
           }.bind(this)}
         ></Control>
-        <Content title={_title} desc={_desc}></Content>
+
+        {/* <ReadContent title={_title} desc={_desc}></ReadContent> */}
+        {_article}
       </div>
     );
   }
