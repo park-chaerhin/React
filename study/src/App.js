@@ -10,8 +10,9 @@ import CreateContent from './components/CreateContent';
 class App extends Component {
   constructor(props){
     super(props);
+    this.max_content_id = 3;
     this.state = {
-      mode: 'read',
+      mode: 'create',
       selected_content_id:1,
       subject:{title: 'HI', sub: 'React Start'},
       welcome: {title: 'welcome', desc:'hello React'},
@@ -44,7 +45,26 @@ class App extends Component {
       }
       _article = <ReadContent title={_title} desc={_desc}></ReadContent>
     } else if(this.state.mode === 'create'){
-      _article = <CreateContent></CreateContent>
+      _article = 
+      <CreateContent 
+        onSubmit={function(_title, _desc){
+          // TOC에 새로운 내용 추가
+          this.max_content_id = this.max_content_id+1;
+          
+          /*this.state.contents.push(
+            {id:this.max_content_id, title: _title, desc: _desc}
+          );*/
+          var _contents = this.state.contents.concat(
+            {id:this.max_content_id, title: _title, desc: _desc}
+          )
+          
+          this.setState({
+            // contents: this.state.contents
+            contents : _contents
+          })
+          console.log(_title, _desc)
+        }.bind(this)}
+      ></CreateContent>
     }
     
     console.log('render', this) //this= render함수가 속해있는 component자신
