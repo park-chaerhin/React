@@ -6,6 +6,7 @@ import Subject from './components/Subject'
 import Control from './components/Control'
 import ReadContent from './components/ReadContent'
 import CreateContent from './components/CreateContent';
+import UpdateContent from './components/UpdateContent';
 
 class App extends Component {
   constructor(props){
@@ -23,9 +24,8 @@ class App extends Component {
       ]
     }
   }
-  render(){
-    //console.log('App Render');
-
+  
+  getContent(){
     var _title, _desc, _article = null;
     // mode에 따라 article의 내용 바뀜
     if(this.state.mode === 'welcome'){
@@ -66,9 +66,16 @@ class App extends Component {
           //console.log(_title, _desc)
         }.bind(this)}
       ></CreateContent>
+    } else if(this.state.mode === 'update'){
+      _article =
+      <UpdateContent></UpdateContent>
     }
     
-    //console.log('render', this) //this= render함수가 속해있는 component자신
+    return _article;
+  }
+
+  render(){
+    //console.log('App Render');
 
     return (
       <div className="App">
@@ -118,7 +125,7 @@ class App extends Component {
         ></Control>
 
         {/* <ReadContent title={_title} desc={_desc}></ReadContent> */}
-        {_article}
+        {this.getContent()}
       </div>
     );
   }
