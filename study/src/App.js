@@ -24,7 +24,7 @@ class App extends Component {
     }
   }
   render(){
-    console.log('App Render');
+    //console.log('App Render');
 
     var _title, _desc, _article = null;
     // mode에 따라 article의 내용 바뀜
@@ -51,7 +51,8 @@ class App extends Component {
           // TOC에 새로운 내용 추가
           this.max_content_id = this.max_content_id+1;
           
-          /*this.state.contents.push(
+          /* 원본을 수정하지 말고, 복사본을 수정해서 저장~
+          this.state.contents.push(
             {id:this.max_content_id, title: _title, desc: _desc}
           );*/
           var _contents = this.state.contents.concat(
@@ -62,12 +63,12 @@ class App extends Component {
             // contents: this.state.contents
             contents : _contents
           })
-          console.log(_title, _desc)
+          //console.log(_title, _desc)
         }.bind(this)}
       ></CreateContent>
     }
     
-    console.log('render', this) //this= render함수가 속해있는 component자신
+    //console.log('render', this) //this= render함수가 속해있는 component자신
 
     return (
       <div className="App">
