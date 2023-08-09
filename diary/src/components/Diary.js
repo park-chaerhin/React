@@ -1,10 +1,11 @@
 /*
     C -
     R -
-    ---------왜 새로고침 해야 바뀌어있는지...
+    ---------왜 새로고침 해야 바뀌어있는지... / timeline같은 디자인 추가
     U
     D
-    !! 클릭한 날짜 알아내서 리스트 추가, 리스트 읽어오기 !!
+    !! 클릭한 날짜 알아내서 리스트 추가, 리스트 읽어오기 / 리스트 있으면 배지 추가!!
+    https://mui.com/material-ui/react-timeline/#api 참고해서 list npm install 해야할게 있나?!?!?!?!?
 */
 
 // firebase 연결
@@ -27,6 +28,13 @@ import IconButton from '@mui/joy/IconButton';
 // import Menu from '@mui/joy/Menu';
 // import MenuItem from '@mui/joy/MenuItem';
 // import ListItemDecorator from '@mui/joy/ListItemDecorator';
+
+import Timeline from '@mui/lab/Timeline';
+import TimelineItem from '@mui/lab/TimelineItem';
+import TimelineSeparator from '@mui/lab/TimelineSeparator';
+import TimelineConnector from '@mui/lab/TimelineConnector';
+import TimelineContent from '@mui/lab/TimelineContent';
+import TimelineDot from '@mui/lab/TimelineDot';
 
 import Chip from '@mui/joy/Chip';
 
@@ -93,6 +101,20 @@ export default class ExampleTextareaComment extends Component {
     } 
 
     render(){
+        const BasicTimeline = this.state.lists.map(value => {
+            <Timeline>
+                <TimelineItem>
+                    <TimelineSeparator>
+                        <TimelineDot />
+                        <TimelineConnector />
+                    </TimelineSeparator>
+                    <TimelineContent>
+                        {value.time}{value.content}
+                    </TimelineContent>
+                </TimelineItem>
+            </Timeline>
+        })
+        /*
         const showList = this.state.lists.map(value=>(
             <div 
                 key={value.id}
@@ -107,9 +129,11 @@ export default class ExampleTextareaComment extends Component {
                 </IconButton>
             </div>
         ))
+        */
         return (
             <div>
-                {showList}
+                {BasicTimeline}
+                {/*showList*/}
                 <FormControl>
                     <Textarea
                         placeholder=""
