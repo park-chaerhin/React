@@ -1,14 +1,22 @@
+/*
+    https://mui.com/joy-ui/react-badge/
+    해당 날짜에 리스트 있으면 뱃지!
+*/
 import * as React from 'react';
+import {Component} from 'react';
+
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 
-export default function CustomMonthLayout() {
-    return (
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DateCalendar showDaysOutsideCurrentMonth fixedWeekNumber={6} />
-        </LocalizationProvider>
-    );
+export default class CustomMonthLayout extends Component {
+    render(){
+        return (
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DateCalendar showDaysOutsideCurrentMonth fixedWeekNumber={6} />
+            </LocalizationProvider>
+        );
+    }
 }
 
 /* 

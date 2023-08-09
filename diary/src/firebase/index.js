@@ -1,10 +1,11 @@
-import { initializeApp } from "firebase/app";
-import {getFirestore} from '@firebase/firestore'
+import {initializeApp} from 'firebase/app'
+import {getFirestore} from '@firebase/firestore';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
     apiKey: "AIzaSyAtVktwW81ymAkR2anamaGyje9BF1-QTYY",
     authDomain: "capturenote-54bc2.firebaseapp.com",
+    databaseURL: "https://capturenote-54bc2-default-rtdb.firebaseio.com",
     projectId: "capturenote-54bc2",
     storageBucket: "capturenote-54bc2.appspot.com",
     messagingSenderId: "1004451932995",
