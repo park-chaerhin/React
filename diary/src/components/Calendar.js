@@ -9,15 +9,15 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 
-export default class CustomMonthLayout extends Component {
-    render(){
-        return (
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DateCalendar showDaysOutsideCurrentMonth fixedWeekNumber={6} />
-            </LocalizationProvider>
-        );
-    }
-}
+// export default class CustomMonthLayout extends Component {
+//     render(){
+//         return (
+//             <LocalizationProvider dateAdapter={AdapterDayjs}>
+//                 <DateCalendar showDaysOutsideCurrentMonth fixedWeekNumber={6} />
+//             </LocalizationProvider>
+//         );
+//     }
+// }
 
 /* 
 // 노가다 달력

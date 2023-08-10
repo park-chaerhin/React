@@ -8,8 +8,9 @@ import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
 
 import CalendarTodayOutlinedIcon from '@mui/icons-material/CalendarTodayOutlined';
-import EditNoteOutlinedIcon from '@mui/icons-material/EditNoteOutlined';
+import ListOutlinedIcon from '@mui/icons-material/ListOutlined';
 import InsertPhotoOutlinedIcon from '@mui/icons-material/InsertPhotoOutlined';
+import CameraAltOutlinedIcon from '@mui/icons-material/CameraAltOutlined';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 
 export default class FixedBottomNavigation extends Component {
@@ -50,14 +51,14 @@ export default class FixedBottomNavigation extends Component {
                             icon={<CalendarTodayOutlinedIcon />} 
                         />
                         <BottomNavigationAction 
-                            label="Diary" 
-                            value="diary"
-                            icon={<EditNoteOutlinedIcon />} 
+                            label="All" 
+                            value="all"
+                            icon={<ListOutlinedIcon />} 
                         />
                         <BottomNavigationAction 
-                            label="Photo" 
-                            value="photo"
-                            icon={<InsertPhotoOutlinedIcon />} 
+                            label="Camera" 
+                            value="camera"
+                            icon={<CameraAltOutlinedIcon />} 
                         />
                         <BottomNavigationAction 
                             label="Search" 
