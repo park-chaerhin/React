@@ -1,3 +1,6 @@
+/*
+  +버튼 만들어서 클릭하면 글쓰기(list/diary.js) 나오게~
+*/
 import './App.css';
 import React,{Component} from 'react';
 
