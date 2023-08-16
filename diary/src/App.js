@@ -1,33 +1,26 @@
-/*
-  +버튼 만들어서 클릭하면 글쓰기(list/diary.js) 나오게~
-*/
 import './App.css';
 import React,{Component} from 'react';
-
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
+import {BrowserRouter, Routes, Route} from 'react-router-dom';
 
 import Calendar from './components/Calendar'
 import FixedBottomNavigation from './components/Navigation'
 import Camera from './components/Camera'
 import List from './components/List'
 
+
 export default class App extends Component {
   render(){
     return (
-      <div className="App">
-        {/* Calendar */}
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DateCalendar showDaysOutsideCurrentMonth fixedWeekNumber={6} />
-        </LocalizationProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Calendar />}></Route>
+          <Route path="/List" element={<List />}></Route>
+          <Route path="/Camera" element={<Camera />}></Route>
+          <Route path="/" element={<Calendar />}></Route>
+        </Routes>  
 
-        <List />
-
-        <Camera />
-        
         <FixedBottomNavigation />
-      </div>
+      </BrowserRouter>
     );
   }
 }

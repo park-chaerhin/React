@@ -7,6 +7,7 @@
     !! 클릭한 날짜 알아내서 리스트 추가, 리스트 읽어오기 / 리스트 있으면 배지 추가!!
     https://mui.com/material-ui/react-timeline/#api 참고해서 list npm install 해야할게 있나?!?!?!?!?
 
+    시간 : 년-월-일 시간 으로 표시!
 */
 
 // firebase 연결
@@ -17,27 +18,41 @@ import * as React from 'react';
 import {Component} from 'react';
 
 /**  MUI  **/
-import Box from '@mui/joy/Box';
-import Button from '@mui/joy/Button';
-import FormControl from '@mui/joy/FormControl';
-import Textarea from '@mui/joy/Textarea';
+// import ModalDialog from '@mui/joy/ModalDialog';
+// import Divider from '@mui/joy/Divider';
+import Typography from '@mui/joy/Typography';
+// import ModalClose from '@mui/joy/ModalClose';
+
+import Card from '@mui/joy/Card';
+import CardContent from '@mui/joy/CardContent';
+
 import IconButton from '@mui/joy/IconButton';
 
-import Timeline from '@mui/lab/Timeline';
-import TimelineItem from '@mui/lab/TimelineItem';
-import TimelineSeparator from '@mui/lab/TimelineSeparator';
-import TimelineConnector from '@mui/lab/TimelineConnector';
-import TimelineContent from '@mui/lab/TimelineContent';
-import TimelineDot from '@mui/lab/TimelineDot';
-import TimelineOppositeContent, {timelineOppositeContentClasses} from '@mui/lab/TimelineOppositeContent';
 
-import Chip from '@mui/joy/Chip';
+// import Box from '@mui/joy/Box';
+// import Button from '@mui/joy/Button';
+// import FormControl from '@mui/joy/FormControl';
+// import Textarea from '@mui/joy/Textarea';
+// import IconButton from '@mui/joy/IconButton';
 
-import ModeEditOutlinedIcon from '@mui/icons-material/ModeEditOutlined';
-import HighlightOffOutlinedIcon from '@mui/icons-material/HighlightOffOutlined';
+// import Timeline from '@mui/lab/Timeline';
+// import TimelineItem from '@mui/lab/TimelineItem';
+// import TimelineSeparator from '@mui/lab/TimelineSeparator';
+// import TimelineConnector from '@mui/lab/TimelineConnector';
+// import TimelineContent from '@mui/lab/TimelineContent';
+// import TimelineDot from '@mui/lab/TimelineDot';
+// import TimelineOppositeContent, {timelineOppositeContentClasses} from '@mui/lab/TimelineOppositeContent';
 
-import CollectionsOutlinedIcon from '@mui/icons-material/CollectionsOutlined';
-import SendSharpIcon from '@mui/icons-material/SendSharp';
+// import Chip from '@mui/joy/Chip';
+
+// import ModeEditOutlinedIcon from '@mui/icons-material/ModeEditOutlined';
+// import HighlightOffOutlinedIcon from '@mui/icons-material/HighlightOffOutlined';
+
+// import CollectionsOutlinedIcon from '@mui/icons-material/CollectionsOutlined';
+// import SendSharpIcon from '@mui/icons-material/SendSharp';
+
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+
 
 export default class ExampleTextareaComment extends Component {
     constructor(props){
@@ -73,72 +88,90 @@ export default class ExampleTextareaComment extends Component {
     };
 
     // CRUD : Create
-    createList = () => {
-        addDoc(this.listsCollectionRef,
-            {
-                //date는 달력에서 선택한 날짜로 설정
-                time: this.now_time,
-                content: this.state.newList,
-                timeStamp: this.date
-            }
-        );
-        this.setState({changed: true})
-    };
+    // createList = () => {
+    //     addDoc(this.listsCollectionRef,
+    //         {
+    //             //date는 달력에서 선택한 날짜로 설정
+    //             time: this.now_time,
+    //             content: this.state.newList,
+    //             timeStamp: this.date
+    //         }
+    //     );
+    //     this.setState({changed: true})
+    // };
 
     // CRUD : Delete
-    // deleteList = async(id)=>{
-    //     const del = window.confirm('Delete? Really?');
-    //     if(del){
-    //         const listDoc = doc(db, 'lists', id);
-    //         await deleteDoc(listDoc);
-    //         this.setState({changed: true});
-    //     }
-    // } 
+    deleteList = async(id)=>{
+        const del = window.confirm('Delete? Really?');
+        if(del){
+            const listDoc = doc(db, 'lists', id);
+            await deleteDoc(listDoc);
+            this.setState({changed: true});
+        }
+    } 
 
     render(){
         const showList = this.state.lists.map((value) => (
-            <Timeline 
-                sx={{
-                    [`& .${timelineOppositeContentClasses.root}`]:{
-                        flex: 0.2,
-                    },
-                    }}
-                position="alternate"
-                key={value.id}
-            >
-                <TimelineItem>
-                    <TimelineOppositeContent color="text.secondary">
-                        {value.time}
-                    </TimelineOppositeContent>
-                    <TimelineSeparator>
-                        <TimelineDot />
-                        <TimelineConnector />
-                    </TimelineSeparator>
-                    <TimelineContent>
-                        {value.content}
-                    </TimelineContent>
-                </TimelineItem>
-            </Timeline>
-
-            /* 메신저디자인~
-                <div 
-                    key={value.id}
-                >
-                    <span>{value.time}</span>
-                    <span>{value.content}</span>
+            <Card variant="soft">
+                <CardContent>
+                    <Typography level="body-sm">{value.time}{value.content}</Typography>
                     <IconButton
-                        onClick={()=>{this.deleteList(value.id)}}
+                        size="sm"
+                        variant="solid"
+                        sx={{
+                            position: 'absolute',
+                            right: 10,
+                            bottom: 10 
+                        }}
+                        onClick={()=> this.deleteList(value.id)}
                     >
-                        <HighlightOffOutlinedIcon />
+                        <DeleteForeverIcon />
                     </IconButton>
-                </div>
-            */
+                </CardContent>
+            </Card>
+
+            // 메신저디자인~
+            //<div key={value.id}>
+            //    <ModalDialog
+            //        aria-labelledby="divider-modal-title"
+            //        aria-describedby="divider-modal-desc"
+            //        sx={{
+            //            position: 'static',
+            //            minWidth: 950
+            //        }}
+            //    >
+            //        <IconButton>
+            //            <DeleteForeverIcon />
+            //        </IconButton>
+            //        <Typography
+            //            level="body-sm" id="divider-modal-desc" fontSize="sm"
+            //        > {value.content} </Typography>
+            //        <Typography
+            //            level="body-sm" id="divider-modal-desc" fontSize="sm"
+            //        > {value.time} </Typography>
+            //    </ModalDialog>
+            //</div>
+                // <div 
+                //     key={value.id}
+                // >
+                //     <span>{value.content}</span>
+                //     {/* <span>{value.timeStamp}</span> */}
+                //     <span>{value.time}</span>
+
+                //     <IconButton
+                //         onClick={()=>{this.deleteList(value.id)}}
+                //     >
+                //         <HighlightOffOutlinedIcon />
+                //     </IconButton>
+                // </div>
+            
         )).reverse();
 
         return (
             <div>
                 {showList}
 
+                {/*
                 <FormControl>
                     <Textarea
                         placeholder=""
@@ -177,7 +210,6 @@ export default class ExampleTextareaComment extends Component {
                                     flex: 'auto',
                                 }}
                             >
-                                {/* 갤러리버튼 : firebase 저장된 사진 불러오기 */}
                                 <IconButton
                                     variant="plain"
                                     color="neutral"
@@ -185,17 +217,6 @@ export default class ExampleTextareaComment extends Component {
                                 >
                                     <CollectionsOutlinedIcon />
                                 </IconButton>
-
-                                {/*
-                                <IconButton
-                                    variant={italic ? 'soft' : 'plain'}
-                                    color={italic ? 'primary' : 'neutral'}
-                                    aria-pressed={italic}
-                                    onClick={() => setItalic((bool) => !bool)}
-                                >
-                                    <FormatItalic /> 
-                                </IconButton>
-                                */}
 
                                 <IconButton 
                                     sx={{ ml: 'auto' }}
@@ -214,6 +235,7 @@ export default class ExampleTextareaComment extends Component {
                         }}
                     />
                 </FormControl>
+                */}
             </div>
         );
     }

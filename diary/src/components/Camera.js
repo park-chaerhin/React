@@ -6,6 +6,11 @@ import 'firebase/compat/database';
 import 'firebase/compat/storage';
 import {oStorage, oPicturesinDB} from '../firebase/index';
 
+import IconButton from '@mui/joy/IconButton';
+import CameraIcon from '@mui/icons-material/Camera';
+import Fab from '@mui/material/Fab';
+import AddIcon from '@mui/icons-material/Add';
+
 export default class Camera extends Component{
     constructor(props){
         super(props);
@@ -66,7 +71,7 @@ export default class Camera extends Component{
                         //console.log(`캡쳐: ${pImageData.type}, ${pImageData.size}바이트`);
                     // 저장할 이미지 파일이름으로 사용할 id 준비
                     const nID = new Date().toISOString;
-                    // 파이어베이스 스토리지에 저장
+                    // 파이어베이스 스토리지에 저장fire
                     const oImageRef = oStorage.ref('images').child(`pic${nID}`);
                     oImageRef.put(pImageData)
                         .then(snapshot => {
@@ -81,7 +86,7 @@ export default class Camera extends Component{
                                         filename: `pic${nID}`,
                                     })
                                     .then(() => {
-                                    // 저장 후 홈 화면으로 이동
+                                        //
                                     });
                                 });
                         })
@@ -100,14 +105,43 @@ export default class Camera extends Component{
 
         return(
             <div>
-                <div>
+                <div style={{width: '100vw', height: '100vh', overflow: 'hidden'}}>
                     {/* clssName 으로 style 추가 ! : video  width=100% */}
-                    <video ref={this.rVideoRef} />
-                    비디오
+                    <video 
+                        ref={this.rVideoRef} 
+                        style={{width: '100%', height: '100%', objectFit: 'cover'}}
+                    />
                 </div>
-                <div>
-                    <button onClick={this.fnCameraCapture}></button>
-                </div>
+                <Fab 
+                        sx={{
+                            position:'fixed',
+                            bottom: '65px', 
+                            left: '50%',
+                            transform: 'translateX(-50%)'
+                        }}
+                        color="" 
+                        aria-label="camera"
+                        onClick={this.fnCameraCapture()}
+                    >
+                    <CameraIcon />
+                </Fab>
+
+                {/*
+                <IconButton
+                    size="md"
+                    variant="soft"
+                    onClick={this.fnCameraCapture}
+                    style={{
+                        position: 'absolute',
+                        bottom: '65px',
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                        borderRadius: '50%'
+                    }}
+                >
+                    <CameraIcon />
+                </IconButton>
+                */}
             </div>
         )
     }

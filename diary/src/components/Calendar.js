@@ -1,23 +1,332 @@
 /*
+    1/
     https://mui.com/joy-ui/react-badge/
     해당 날짜에 리스트 있으면 뱃지!
+
+    2/
+    새로고침 눌러야 showlist에 반영됨! -> 수정!
 */
+// firebase 연결
+import {db} from '../firebase/index';
+import {collection, onSnapshot, doc, getDocs, addDoc, deleteDoc, query, orderBy} from '@firebase/firestore';
+
 import * as React from 'react';
 import {Component} from 'react';
 
+// 달력
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 
-// export default class CustomMonthLayout extends Component {
-//     render(){
-//         return (
-//             <LocalizationProvider dateAdapter={AdapterDayjs}>
-//                 <DateCalendar showDaysOutsideCurrentMonth fixedWeekNumber={6} />
-//             </LocalizationProvider>
-//         );
-//     }
-// }
+// 타임라인
+import Timeline from '@mui/lab/Timeline';
+import TimelineItem from '@mui/lab/TimelineItem';
+import TimelineSeparator from '@mui/lab/TimelineSeparator';
+import TimelineConnector from '@mui/lab/TimelineConnector';
+import TimelineContent from '@mui/lab/TimelineContent';
+import TimelineDot from '@mui/lab/TimelineDot';
+import TimelineOppositeContent, {timelineOppositeContentClasses} from '@mui/lab/TimelineOppositeContent';
+
+// 다이어로그
+import Modal from '@mui/joy/Modal';
+import ModalDialog from '@mui/joy/ModalDialog';
+import Dialog from '@mui/material/Dialog';
+import DialogContent from '@mui/material/DialogContent';
+
+import Box from '@mui/material/Box';
+import Fab from '@mui/material/Fab';
+
+import FormControl from '@mui/joy/FormControl';
+import Textarea from '@mui/joy/Textarea';
+import IconButton from '@mui/joy/IconButton';
+
+import Chip from '@mui/joy/Chip';
+
+// 아이콘
+import AddIcon from '@mui/icons-material/Add';
+import CollectionsOutlinedIcon from '@mui/icons-material/CollectionsOutlined';
+import SendSharpIcon from '@mui/icons-material/SendSharp';
+
+
+export default class CustomMonthLayout extends Component {
+    constructor(props){
+        super(props);
+    
+        // 렌더링 상태 체크/ 선택한 날짜/ input 숨기기/ 모달 숨기기/ 추가할 데이터 저장/ 데이터 저장
+        this.state={
+            changed: false,
+            selectedDate: null,
+
+            showFormControl: false,
+            showModal: false,
+
+            newList: '',
+            lists: []
+        }
+        this.toggleFormControl = this.toggleFormControl.bind(this);
+        this.createList = this.createList.bind(this);
+        this.toggleModal = this.toggleModal.bind(this); // 모달 토글 함수 추가
+    
+        // DB 연결 객체 
+        this.listsCollectionRef = collection(db, 'lists')
+    
+        // DB에 입력할 날짜
+        this.date = new Date();
+        this.now_date = this.date.getFullYear() + ' - ' + (this.date.getMonth()+1) + ' - ' + this.date.getDate();
+        this.now_time = this.date.getHours() + ' : ' + this.date.getMinutes();
+        
+    }
+
+    // 날짜 값 가져오기
+    handleDateChange = (newValue) => {
+        this.setState({
+            selectedDate : newValue
+        });
+    }
+
+    // firebase 데이터베이스 리스너 설정
+    componentDidMount(){
+        // const database = firebase.database();
+        const listsRef = collection(db, 'lists');
+
+        // firestore database 리스너
+        onSnapshot(listsRef, (snapshot)=>{
+            const lists= [];
+            snapshot.forEach((doc)=>{
+                const list = doc.data();
+                lists.push(list);
+            });
+
+            this.setState({lists});
+        });
+    }
+    
+
+    // CRUD : Read
+    componentDidMount(){
+        this.getLists();
+    }
+    async getLists(){
+        const data = await getDocs(
+            query(this.listsCollectionRef, orderBy('timeStamp', 'desc'))
+        );
+        const lists = data.docs.map(doc => ({...doc.data(), id: doc.id}));
+        this.setState({lists, changed: false});
+    };
+
+    // 버튼 누르면 textarea 나옴
+    toggleFormControl = () => {
+        this.setState((prevState) => ({
+        showFormControl: !prevState.showFormControl,
+        }))
+    }
+
+    toggleModal(){
+        this.setState((prevState) => ({
+            showModal: !prevState.showModal
+        }))
+    }
+
+    // CRUD : Create
+    createList = () => {
+        addDoc(this.listsCollectionRef,
+        {
+            //date는 달력에서 선택한 날짜로 설정
+            time: this.now_time,
+            content: this.state.newList,
+            timeStamp: this.date
+        }
+        );
+        this.setState({changed: true})
+        this.toggleModal();
+    };
+
+    
+    render(){
+        const {showModal, lists, selectedDate} = this.state;
+        console.log(selectedDate)
+
+        const showList = this.state.lists.map((value) => (
+            <Timeline 
+                sx={{
+                    [`& .${timelineOppositeContentClasses.root}`]:{
+                        flex: 0.2,
+                    },
+                    }}
+                position="alternate"
+                key={value.id}
+            >
+                <TimelineItem>
+                    <TimelineOppositeContent color="text.secondary">
+                        {value.time}
+                    </TimelineOppositeContent>
+                    <TimelineSeparator>
+                        <TimelineDot />
+                        <TimelineConnector />
+                    </TimelineSeparator>
+                    <TimelineContent>
+                        {value.content}
+                    </TimelineContent>
+                </TimelineItem>
+            </Timeline>
+        )).reverse();
+    
+        return (
+            <div>
+                {/* 달력 */}
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DateCalendar 
+                        value={selectedDate}
+                        onChange={this.handleDateChange}
+                        showDaysOutsideCurrentMonth 
+                        fixedWeekNumber={6} />
+                </LocalizationProvider>
+
+                {/* 타임라인 리스트 */}
+                <div style={{marginBottom: '75px'}}>
+                    {showList}
+                </div>
+
+                <Box
+                    sx={{position:'fixed', bottom:0, left:0, right:0, zIndex:1}}
+                >
+                    <Fab 
+                        sx={{position:'fixed', bottom: 65, right:10}}
+                        color="" 
+                        aria-label="add"
+                        onClick={this.toggleModal}
+                    >
+                        <AddIcon />
+                    </Fab>
+                    
+                    {/* 리스트추가 */}
+                    <Dialog open={showModal} onClose={this.toggleModal}>
+                        <DialogContent>
+                            <Textarea
+                                placeholder=""
+                                minRows={1}
+                                onChange={(e)=>{this.setState({newList: e.target.value})}}
+                                startDecorator={
+                                    <Box
+                                        sx={{
+                                            display: 'flex',
+                                        }}
+                                    >
+                                        <Chip
+                                            color="neutral"
+                                            disabled={false}
+                                            onClick={function(){}}
+                                            size="sm"
+                                            variant="plain"
+                                        > {this.now_date} </Chip>
+                                        <Chip
+                                            color="neutral"
+                                            disabled={false}
+                                            onClick={function(){}}
+                                            size="sm"
+                                            variant="plain"
+                                        > {this.now_time} </Chip>
+                                    </Box>
+                                }
+                                endDecorator={
+                                    <Box
+                                        sx={{
+                                            display: 'flex',
+                                            gap: 'var(--Textarea-paddingBlock)',
+                                            pt: 'var(--Textarea-paddingBlock)',
+                                            borderTop: '1px solid',
+                                            borderColor: 'divider',
+                                            flex: 'auto',
+                                        }}
+                                    >
+                                    {/* 갤러리버튼 : firebase 저장된 사진 불러오기 */}
+                                    <IconButton
+                                        variant="plain"
+                                        color="neutral"
+                                        //onClick={}
+                                    > <CollectionsOutlinedIcon /> </IconButton>        
+                                    <IconButton 
+                                        sx={{ ml: 'auto' }}
+                                        type="submit"
+                                        onClick={this.createList}
+                                    > <SendSharpIcon /> </IconButton>
+                                    </Box>
+                                }
+                                sx={{
+                                    minWidth: 300,
+                                    borderRadius: 0,
+                                }}
+                            />
+                        </DialogContent>
+                    </Dialog>
+
+                    {/*
+                    {this.state.showFormControl && (
+                        <FormControl
+                            sx={{width:500}}
+                        >
+                            <Textarea
+                                placeholder=""
+                                minRows={1}
+                                onChange={(e)=>{this.setState({newList: e.target.value})}}
+                                startDecorator={
+                                    <Box
+                                        sx={{
+                                            display: 'flex',
+                                        }}
+                                    >
+                                        <Chip
+                                            color="neutral"
+                                            disabled={false}
+                                            onClick={function(){}}
+                                            size="sm"
+                                            variant="plain"
+                                        > {this.now_date} </Chip>
+                                        <Chip
+                                            color="neutral"
+                                            disabled={false}
+                                            onClick={function(){}}
+                                            size="sm"
+                                            variant="plain"
+                                        > {this.now_time} </Chip>
+                                    </Box>
+                                }
+                                endDecorator={
+                                    <Box
+                                        sx={{
+                                            display: 'flex',
+                                            gap: 'var(--Textarea-paddingBlock)',
+                                            pt: 'var(--Textarea-paddingBlock)',
+                                            borderTop: '1px solid',
+                                            borderColor: 'divider',
+                                            flex: 'auto',
+                                        }}
+                                    >
+                                    <IconButton
+                                        variant="plain"
+                                        color="neutral"
+                                        // onClick={(event) => setAnchorEl(event.currentTarget)}
+                                    > <CollectionsOutlinedIcon /> </IconButton>        
+                                    <IconButton 
+                                        sx={{ ml: 'auto' }}
+                                        type="submit"
+                                        onClick={this.createList}
+                                    > <SendSharpIcon /> </IconButton>
+                                    </Box>
+                                }
+                                sx={{
+                                    minWidth: 300,
+                                    borderRadius: 0,
+                                }}
+                            />
+                        </FormControl>
+                    )}
+                    */}
+                </Box>
+            </div>
+        );
+    }
+}
 
 /* 
 // 노가다 달력

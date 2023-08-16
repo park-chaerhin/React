@@ -1,8 +1,15 @@
+/*
+    main 가려짐
+    아이콘 클릭 -> 페이지 전환
+*/
+
 import * as React from 'react';
 import {Component} from 'react';
 
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
+
+import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 
 import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
@@ -19,7 +26,7 @@ export default class FixedBottomNavigation extends Component {
         this.state = {
             value: 'calendar'
         };
-        this.ref = React.createRef();
+        // this.ref = React.createRef();
         this.handleChange = this.handleChange.bind(this);
     }
     
@@ -27,47 +34,52 @@ export default class FixedBottomNavigation extends Component {
         this.setState({ value: newValue});
     }
 
-    componentDidMount(){
-        this.ref.current.ownerDocument.body.scrollTop = 0;
-    }
+    // componentDidMount(){
+    //     this.ref.current.ownerDocument.body.scrollTop = 0;
+    // }
 
     render() {
         const {value} = this.state;
 
         return (
-            <Box ref={this.ref}>
-                <Paper
-                    sx={{position: 'fixed', bottom: 0, left: 0, right:0}}
-                    elevation={3}
+            <Paper
+                sx={{position: 'fixed', bottom: 0,width: '100%', zIndex:2}}
+                elevation={3}
+            >
+                <BottomNavigation
+                    value={value}
+                    onChange={this.handleChange}
                 >
-                    <BottomNavigation
-                        //sx={{ width: 1200 }}
-                        value={value}
-                        onChange={this.handleChange}
-                    >
-                        <BottomNavigationAction 
-                            label="Calendar" 
-                            value="calendar"
-                            icon={<CalendarTodayOutlinedIcon />} 
-                        />
-                        <BottomNavigationAction 
-                            label="All" 
-                            value="all"
-                            icon={<ListOutlinedIcon />} 
-                        />
-                        <BottomNavigationAction 
-                            label="Camera" 
-                            value="camera"
-                            icon={<CameraAltOutlinedIcon />} 
-                        />
-                        <BottomNavigationAction 
-                            label="Search" 
-                            value="search"
-                            icon={<SearchOutlinedIcon />} 
-                        />
-                    </BottomNavigation>
-                </Paper>
-            </Box>
+                    <BottomNavigationAction
+                        component={Link}
+                        to='/'
+                        label="Calendar" 
+                        value="calendar"
+                        icon={<CalendarTodayOutlinedIcon />} 
+                    />
+                    <BottomNavigationAction 
+                        component={Link}
+                        to='/List'
+                        label="All" 
+                        value="all"
+                        icon={<ListOutlinedIcon />} 
+                    />
+                    <BottomNavigationAction 
+                        component={Link}
+                        to='/camera'
+                        label="Camera" 
+                        value="camera"
+                        icon={<CameraAltOutlinedIcon />} 
+                    />
+                    <BottomNavigationAction 
+                        component={Link}
+                        to='/search'
+                        label="Search" 
+                        value="search"
+                        icon={<SearchOutlinedIcon />} 
+                    />
+                </BottomNavigation>
+            </Paper>
         );
     };
 };
