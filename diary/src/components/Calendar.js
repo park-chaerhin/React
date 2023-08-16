@@ -1,10 +1,13 @@
 /*
     1/
-    https://mui.com/joy-ui/react-badge/
-    해당 날짜에 리스트 있으면 뱃지!
-
+        https://mui.com/joy-ui/react-badge/
+        해당 날짜에 리스트 있으면 뱃지!
     2/
-    새로고침 눌러야 showlist에 반영됨! -> 수정!
+        새로고침 눌러야 showlist에 반영됨!
+    3/
+        클릭한 날짜 구해서 해당 날짜에 list 등록
+    4/
+        firebase에 저장된 사진 불러오기
 */
 // firebase 연결
 import {db} from '../firebase/index';
@@ -73,7 +76,6 @@ export default class CustomMonthLayout extends Component {
         this.toggleFormControl = this.toggleFormControl.bind(this);
         this.createList = this.createList.bind(this);
         this.toggleModal = this.toggleModal.bind(this); // 모달 토글 함수 추가
-        //this.fnSubmitPic = this.fnSubmitPic.bind(this);
     
         // DB 연결 객체 
         this.listsCollectionRef = collection(db, 'lists')
@@ -256,7 +258,7 @@ export default class CustomMonthLayout extends Component {
                                         //multiple={true}
                                         ref={this.fileInput}
                                         onChange={this.fileChange}
-                                        //id="fileUpload" 
+                                        id="fileUpload" 
                                         style={{display: "none"}}
                                     />
                                     <IconButton
