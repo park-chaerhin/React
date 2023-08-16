@@ -121,7 +121,7 @@ export default class Camera extends Component{
                         }}
                         color="" 
                         aria-label="camera"
-                        onClick={this.fnCameraCapture()}
+                        //onClick={this.fnCameraCapture}
                     >
                     <CameraIcon />
                 </Fab>

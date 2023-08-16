@@ -52,20 +52,28 @@ export default class CustomMonthLayout extends Component {
     constructor(props){
         super(props);
     
-        // 렌더링 상태 체크/ 선택한 날짜/ input 숨기기/ 모달 숨기기/ 추가할 데이터 저장/ 데이터 저장
         this.state={
+            //렌더링 상태 체크
             changed: false,
+            //선택한 날짜
             selectedDate: null,
 
+            //input/모달 숨기기
             showFormControl: false,
             showModal: false,
 
+            //추가할 데이터 저장
             newList: '',
-            lists: []
-        }
+            //데이터 저장
+            lists: [],
+
+            // 선택한 파일
+            selectedFileName: ''
+        };
         this.toggleFormControl = this.toggleFormControl.bind(this);
         this.createList = this.createList.bind(this);
         this.toggleModal = this.toggleModal.bind(this); // 모달 토글 함수 추가
+        //this.fnSubmitPic = this.fnSubmitPic.bind(this);
     
         // DB 연결 객체 
         this.listsCollectionRef = collection(db, 'lists')
@@ -75,6 +83,8 @@ export default class CustomMonthLayout extends Component {
         this.now_date = this.date.getFullYear() + ' - ' + (this.date.getMonth()+1) + ' - ' + this.date.getDate();
         this.now_time = this.date.getHours() + ' : ' + this.date.getMinutes();
         
+        //file
+        this.filedInput = React.createRef();
     }
 
     // 날짜 값 가져오기
@@ -84,27 +94,19 @@ export default class CustomMonthLayout extends Component {
         });
     }
 
-    // firebase 데이터베이스 리스너 설정
+    // CRUD : Read , firebase 데이터베이스 리스너 설정
     componentDidMount(){
-        // const database = firebase.database();
-        const listsRef = collection(db, 'lists');
+        this.getLists();
 
-        // firestore database 리스너
-        onSnapshot(listsRef, (snapshot)=>{
-            const lists= [];
+        const listsRef = collection(db, 'lists');
+        onSnapshot(listsRef, (snapshot) => {
+            const lists = [];
             snapshot.forEach((doc)=>{
                 const list = doc.data();
                 lists.push(list);
-            });
-
+            })
             this.setState({lists});
         });
-    }
-    
-
-    // CRUD : Read
-    componentDidMount(){
-        this.getLists();
     }
     async getLists(){
         const data = await getDocs(
@@ -121,11 +123,11 @@ export default class CustomMonthLayout extends Component {
         }))
     }
 
-    toggleModal(){
-        this.setState((prevState) => ({
+    toggleModal = () => {
+        this.setState((prevState)=>({
             showModal: !prevState.showModal
-        }))
-    }
+        }));
+    };
 
     // CRUD : Create
     createList = () => {
@@ -141,10 +143,18 @@ export default class CustomMonthLayout extends Component {
         this.toggleModal();
     };
 
-    
+    fileInput = React.createRef();
+
+    fileUploadClick = () => {
+        const inputElement = document.getElementById('fileUpload');
+        if(inputElement){
+            inputElement.click();
+        }
+    };
+
     render(){
-        const {showModal, lists, selectedDate} = this.state;
-        console.log(selectedDate)
+        const {showModal, lists, selectedDate, selectedFile} = this.state;
+        // console.log(selectedDate)
 
         const showList = this.state.lists.map((value) => (
             <Timeline 
@@ -200,11 +210,12 @@ export default class CustomMonthLayout extends Component {
                     </Fab>
                     
                     {/* 리스트추가 */}
-                    <Dialog open={showModal} onClose={this.toggleModal}>
+                    <Dialog open={this.state.showModal} onClose={this.toggleModal}>
                         <DialogContent>
                             <Textarea
                                 placeholder=""
-                                minRows={1}
+                                minRows={2}
+                                value={this.state.selectedFile ? this.state.selectedFile.name : ''}
                                 onChange={(e)=>{this.setState({newList: e.target.value})}}
                                 startDecorator={
                                     <Box
@@ -240,10 +251,18 @@ export default class CustomMonthLayout extends Component {
                                         }}
                                     >
                                     {/* 갤러리버튼 : firebase 저장된 사진 불러오기 */}
+                                    <input 
+                                        type="file" 
+                                        //multiple={true}
+                                        ref={this.fileInput}
+                                        onChange={this.fileChange}
+                                        //id="fileUpload" 
+                                        style={{display: "none"}}
+                                    />
                                     <IconButton
                                         variant="plain"
                                         color="neutral"
-                                        //onClick={}
+                                        onClick={this.fileUploadClick}
                                     > <CollectionsOutlinedIcon /> </IconButton>        
                                     <IconButton 
                                         sx={{ ml: 'auto' }}
@@ -256,7 +275,18 @@ export default class CustomMonthLayout extends Component {
                                     minWidth: 300,
                                     borderRadius: 0,
                                 }}
-                            />
+                            >
+                                {/* 선택한 파일 미리보기 */}
+                                {selectedFile && (
+                                    <Box sx={{mt:2}}>
+                                        <img
+                                            src={URL.createObjectURL(selectedFile)}
+                                            alt="Selected File Preview"
+                                            style={{maxWidth: '100', height:'auto'}}
+                                        />
+                                    </Box>
+                                )}
+                            </Textarea>
                         </DialogContent>
                     </Dialog>
 
