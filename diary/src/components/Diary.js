@@ -1,217 +1,77 @@
-/*
-    C -
-    R -
-    ---------왜 새로고침 해야 바뀌어있는지... / timeline같은 디자인 추가
-    U
-    D
-    !! 클릭한 날짜 알아내서 리스트 추가, 리스트 읽어오기 / 리스트 있으면 배지 추가!!
-    https://mui.com/material-ui/react-timeline/#api 참고해서 list npm install 해야할게 있나?!?!?!?!?
-*/
+import React, { Component } from 'react';
+import { TextField, Button, Container, Typography } from '@mui/material';
 
-// firebase 연결
-import {db} from '../firebase';
-import {collection, doc, getDocs, addDoc, deleteDoc, query, orderBy} from '@firebase/firestore';
-
-//import classNames from "classnames/bind";
-//import style from "../components/Calendar.css";
-//const cx = classNames.bind(style);
-
-import * as React from 'react';
-import {Component} from 'react';
-
-import Box from '@mui/joy/Box';
-import Button from '@mui/joy/Button';
-import FormControl from '@mui/joy/FormControl';
-import Textarea from '@mui/joy/Textarea';
-import IconButton from '@mui/joy/IconButton';
-// import FormLabel from '@mui/joy/FormLabel';
-// import Menu from '@mui/joy/Menu';
-// import MenuItem from '@mui/joy/MenuItem';
-// import ListItemDecorator from '@mui/joy/ListItemDecorator';
-
-import Timeline from '@mui/lab/Timeline';
-import TimelineItem from '@mui/lab/TimelineItem';
-import TimelineSeparator from '@mui/lab/TimelineSeparator';
-import TimelineConnector from '@mui/lab/TimelineConnector';
-import TimelineContent from '@mui/lab/TimelineContent';
-import TimelineDot from '@mui/lab/TimelineDot';
-
-import Chip from '@mui/joy/Chip';
-
-import ModeEditOutlinedIcon from '@mui/icons-material/ModeEditOutlined';
-import HighlightOffOutlinedIcon from '@mui/icons-material/HighlightOffOutlined';
-
-import CameraAltOutlinedIcon from '@mui/icons-material/CameraAltOutlined';
-import CollectionsOutlinedIcon from '@mui/icons-material/CollectionsOutlined';
-import SendSharpIcon from '@mui/icons-material/SendSharp';
-
-export default class ExampleTextareaComment extends Component {
-    constructor(props){
+class ManuscriptForm extends Component {
+    constructor(props) {
         super(props);
 
-        // 렌더링 상태 체크, 추가할 데이터 저장, 데이터저장
+        const rows = 3;
+        const columns = 10;
+        const totalInputs = rows * columns;
+        
         this.state = {
-            changed: false,
-            newList : "",
-            lists: []
+            manuscript:  Array(totalInputs).fill('')
         };
-
-        // DB 연결 객체 
-        this.listsCollectionRef = collection(db, 'lists')
-
-        // DB에 입력할 날짜
-        this.date = new Date();
-        this.now_date = this.date.getFullYear() + ' - ' + (this.date.getMonth()+1) + ' - ' + this.date.getDate();
-        this.now_time = this.date.getHours() + ' : ' + this.date.getMinutes();
+        this.inputRefs = Array(totalInputs + 1).fill(React.createRef());
     }
 
-
-    // CRUD : Read
-    componentDidMount(){
-        this.getLists();
-    }
-    async getLists(){
-        const data = await getDocs(
-            query(this.listsCollectionRef, orderBy('time', 'desc'))
-        );
-        const lists = data.docs.map(doc => ({...doc.data(), id: doc.id}));
-        this.setState({lists, changed: false});
+    handleInputChange = (index, value) => {
+        const newManuscript = [...this.state.manuscript];
+        newManuscript[index] = value;
+        this.setState({ manuscript: newManuscript });
     };
 
-    // CRUD : Create
-    createList = () => {
-        addDoc(this.listsCollectionRef,
-            {
-                //date는 달력에서 선택한 날짜로 설정
-                time: this.now_time,
-                content: this.state.newList,
+    handleInputKeyDown = (e, index) => {
+        if (e.key === 'Spacebar') {
+            e.preventDefault();
+            if(index < this.state.manuscript.length - 1) {
+                this.inputRefs[index + 1].current.focus();
             }
-        );
-        this.setState({changed: true})
+        }
+        if (e.key === 'Backspace' && index > 0 && this.state.manuscript[index] === '') {
+            this.inputRefs[index - 1].current.focus();
+        }
     };
 
-    // CRUD : Delete
-    deleteList = async(id)=>{
-        const del = window.confirm('Delete? Really?');
-        if(del){
-            const listDoc = doc(db, 'lists', id);
-            await deleteDoc(listDoc);
-            this.setState({changed: true});
-        }
-    } 
 
-    render(){
-        const BasicTimeline = this.state.lists.map(value => {
-            <Timeline>
-                <TimelineItem>
-                    <TimelineSeparator>
-                        <TimelineDot />
-                        <TimelineConnector />
-                    </TimelineSeparator>
-                    <TimelineContent>
-                        {value.time}{value.content}
-                    </TimelineContent>
-                </TimelineItem>
-            </Timeline>
-        })
-        /*
-        const showList = this.state.lists.map(value=>(
-            <div 
-                key={value.id}
-                className="list"
-            >
-                <span>{value.time}</span>
-                <span>{value.content}</span>
-                <IconButton
-                    onClick={()=>{this.deleteList(value.id)}}
-                >
-                    <HighlightOffOutlinedIcon />
-                </IconButton>
-            </div>
-        ))
-        */
+    render() {
+        const rows = 3;
+        const columns = 10;
+        
         return (
+        <Container>
+            <Typography variant="h5">원고지 양식</Typography>
             <div>
-                {BasicTimeline}
-                {/*showList*/}
-                <FormControl>
-                    <Textarea
-                        placeholder=""
-                        minRows={1}
-                        onChange={(e)=>{this.setState({newList: e.target.value})}}
-                        startDecorator={
-                            <Box
-                                sx={{
-                                    display: 'flex',
-                                }}
-                            >
-                                <Chip
-                                    color="neutral"
-                                    disabled={false}
-                                    onClick={function(){}}
-                                    size="sm"
-                                    variant="plain"
-                                >{this.now_date}</Chip>
-                                <Chip
-                                    color="neutral"
-                                    disabled={false}
-                                    onClick={function(){}}
-                                    size="sm"
-                                    variant="plain"
-                                >{this.now_time}</Chip>
-                            </Box>
-                        }
-                        endDecorator={
-                            <Box
-                                sx={{
-                                    display: 'flex',
-                                    gap: 'var(--Textarea-paddingBlock)',
-                                    pt: 'var(--Textarea-paddingBlock)',
-                                    borderTop: '1px solid',
-                                    borderColor: 'divider',
-                                    flex: 'auto',
-                                }}
-                            >
-                                <IconButton
-                                    variant="plain"
-                                    color="neutral"
-                                    // onClick={(event) => setAnchorEl(event.currentTarget)}
-                                >
-                                    <CameraAltOutlinedIcon />
-                                </IconButton>
-                                <IconButton>
-                                    <CollectionsOutlinedIcon />
-                                </IconButton>
-
-                                {/*
-                                <IconButton
-                                    variant={italic ? 'soft' : 'plain'}
-                                    color={italic ? 'primary' : 'neutral'}
-                                    aria-pressed={italic}
-                                    onClick={() => setItalic((bool) => !bool)}
-                                >
-                                    <FormatItalic /> 
-                                </IconButton>
-                                */}
-
-                                <IconButton 
-                                    sx={{ ml: 'auto' }}
-                                    type="submit"
-                                    onClick={this.createList}
-                                >
-                                    <SendSharpIcon />
-                                </IconButton>
-                            </Box>
-                        }
-                        sx={{
-                        minWidth: 300,
-                        borderRadius: 0,
-                        // fontWeight,
-                        // fontStyle: italic ? 'italic' : 'initial',
-                        }}
-                    />
-                </FormControl>
+                {Array.from({length: rows}, (_, rowIndex) => (
+                    <div key={rowIndex}>
+                        {Array.from({length: columns}, (_, colIndex) => {
+                            const index = rowIndex * columns + colIndex;
+                            return(
+                                <TextField
+                                    key={index}
+                                    inputRef={this.inputRefs[index]}
+                                    value={this.state.manuscript[index]}
+                                    onChange={e => this.handleInputChange(index, e.target.value)}
+                                    onKeyDown={e => this.handleInputKeyDown(e, index)}
+                                    variant="outlined"
+                                    margin="normal"
+                                    size="small"
+                                    style={{ width: '2.8rem', margin: '0.1rem 0'}}
+                                />
+                            )
+                        })}
+                    </div>
+                ))}
             </div>
+            <Button 
+                variant="contained" 
+                color="primary"
+            >
+            ADD
+            </Button>
+        </Container>
         );
     }
 }
+
+export default ManuscriptForm;

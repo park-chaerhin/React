@@ -6,25 +6,25 @@
 import * as React from 'react';
 import {Component} from 'react';
 
-import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 
-import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
 
+import EditNoteIcon from '@mui/icons-material/EditNote';
 import CalendarTodayOutlinedIcon from '@mui/icons-material/CalendarTodayOutlined';
 import ListOutlinedIcon from '@mui/icons-material/ListOutlined';
-import InsertPhotoOutlinedIcon from '@mui/icons-material/InsertPhotoOutlined';
 import CameraAltOutlinedIcon from '@mui/icons-material/CameraAltOutlined';
-import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
+import CollectionsIcon from '@mui/icons-material/Collections';
+
 
 export default class FixedBottomNavigation extends Component {
     constructor(props){
         super(props);
         this.state = {
-            value: 'calendar'
+            value: 'Memo'
         };
         // this.ref = React.createRef();
         this.handleChange = this.handleChange.bind(this);
@@ -53,6 +53,13 @@ export default class FixedBottomNavigation extends Component {
                     <BottomNavigationAction
                         component={Link}
                         to='/'
+                        label="Memo" 
+                        value="Memo"
+                        icon={<EditNoteIcon />} 
+                    />
+                    <BottomNavigationAction
+                        component={Link}
+                        to='/Calendar'
                         label="Calendar" 
                         value="calendar"
                         icon={<CalendarTodayOutlinedIcon />} 
@@ -64,6 +71,7 @@ export default class FixedBottomNavigation extends Component {
                         value="all"
                         icon={<ListOutlinedIcon />} 
                     />
+                    {/*
                     <BottomNavigationAction 
                         component={Link}
                         to='/camera'
@@ -73,11 +81,12 @@ export default class FixedBottomNavigation extends Component {
                     />
                     <BottomNavigationAction 
                         component={Link}
-                        to='/search'
-                        label="Search" 
-                        value="search"
-                        icon={<SearchOutlinedIcon />} 
+                        to='/gallery'
+                        label="Gallery" 
+                        value="gallery"
+                        icon={<CollectionsIcon />} 
                     />
+                    */}
                 </BottomNavigation>
             </Paper>
         );
