@@ -240,7 +240,7 @@ export default class Calendar extends Component {
         const dateTotalCount = this.getdateTotalCount();//
 
         const todayStyle = {
-            border: '#DCE1F2',
+            backgroundColor: '#DCE1F2',
             fontWeight: 'bold',
             color: '#444078'
         };
