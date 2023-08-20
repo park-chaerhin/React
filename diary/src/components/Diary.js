@@ -17,7 +17,6 @@ import { Paper } from '@mui/material';
 import Chip from '@mui/joy/Chip';
 
 import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
 import CreateIcon from '@mui/icons-material/Create';
 
 export default class Memo extends Component{
@@ -110,9 +109,9 @@ export default class Memo extends Component{
                         height: 'min-content',
                         backgroundColor: '#fff',
                         borderRadius: '0.5rem',
-                        padding: '3rem',
+                        padding: '2rem',
                         position: 'fixed',
-                        bottom: '52px',
+                        bottom: '60px',
                     }}
                 >
                     <LocalizationProvider  
