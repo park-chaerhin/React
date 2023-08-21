@@ -1,6 +1,6 @@
 // firebase 연결
 import {db} from '../firebase/index';
-import {collection, onSnapshot, doc, getDocs, addDoc, deleteDoc, query, orderBy} from '@firebase/firestore';
+import {collection,addDoc} from '@firebase/firestore';
 
 import * as React from 'react';
 import {Component} from 'react';
@@ -65,6 +65,7 @@ export default class Memo extends Component{
                 newListContent: ''
             });
         } catch (error) {
+            console.log('a');
             console.log(error);
         }
     }

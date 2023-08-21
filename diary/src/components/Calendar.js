@@ -11,13 +11,14 @@
 
 // firebase 연결
 import {db} from '../firebase/index';
-import {collection, onSnapshot, doc, getDocs, query, orderBy} from '@firebase/firestore';
+import {collection, onSnapshot, doc, getDocs} from '@firebase/firestore';
 
-import * as React from 'react';
-import {Component} from 'react';
+//import * as React from 'react';
+import  React,{Component} from 'react';
 
+import Modal from '@mui/material/Modal';
 import Button from '@mui/material/Button';
-import Marker1 from '../images/remove-MEMORY.png'
+import './Calendar.css'
 
 
 export default class Calendar extends Component {
@@ -50,7 +51,7 @@ export default class Calendar extends Component {
         };
 
         // DB 연결 객체 
-        this.memosCollectionRef = collection(db, 'memos')
+        this.memosCollectionRef = collection(db, 'memos');
     
         // DB에 입력할 날짜
         this.date = new Date();
@@ -193,7 +194,7 @@ export default class Calendar extends Component {
             if ( this.week[day] === nowDay ) {
                 for ( var i = 0; i < dateTotalCount; i++) {
                     const currentDate = new Date(selectedYear, selectedMonth - 1, i + 1);
-                    const formattedDate = currentDate.toLocaleDateString('en-US');
+                    
                     const dayStyle = {
                         //오늘 날짜
                         ...(this.today.year === selectedYear &&
@@ -201,13 +202,6 @@ export default class Calendar extends Component {
                         this.today.date === i + 1
                             ? todayStyle
                             : {}),
-                        // 데이터 있으면 이미지 설정
-                        ...(dateWithImages[formattedDate]
-                            ? {
-                                backgroundImage: `url(${Marker1})`,
-                                backgroundSize: 'cover'
-                            }
-                            : {})
                     };
 
                     dayArr.push(
@@ -253,16 +247,71 @@ export default class Calendar extends Component {
             })
             this.setState({ memos, dateWithImages });
         });
+
+        this.renderAddClass();
     }
 
-    async getMemos(){
-        const data = await getDocs(
-            query(this.memosCollectionRef, orderBy('date', 'title'))
-        );
+    getMemos = async() => {
+        const data = await getDocs(this.memosCollectionRef);
+
+        const memoDate = [];
+        data.forEach((doc) =>{
+            memoDate.push(doc.data());
+        })
+
         const memos = data.docs.map(doc => ({...doc.data(), id: doc.id}));
         this.setState({memos, changed: false});
     };
 
+    //날짜에 일정있으면 이미지 추가
+    renderAddClass = () =>{
+        const weekday = document.querySelectorAll('.weekday button');
+        
+        
+        weekday.forEach((dayitems)=>{
+
+            const memosRef = collection(db, 'memos');
+            onSnapshot(memosRef, (snapshot) => {
+                snapshot.forEach((doc)=>{
+                    if(this.AddClassFilter(new Date(doc.data().date), dayitems)){
+                        dayitems.parentNode.classList.add('active');
+                    }
+                })
+            })
+        })
+    }
+
+    //일정 날짜 비교
+    AddClassFilter = (itemDates, dayitemsdata) =>{
+        const SelectYM = document.querySelectorAll('.SelectYear_SelectMonth span');
+        const months_en = [
+            'January', 'February', 'March', 'April', 'May', 'June',
+            'July', 'August', 'September', 'October', 'November', 'December'
+        ];
+        const months = [
+            '1', '2', '3', '4', '5', '6',
+            '7', '8', '9', '10', '11', '12'
+        ];
+        let saveMonthIndex = '';
+
+        if(itemDates.getFullYear() === Number(SelectYM[1].innerText)){
+
+           for(let x=0; x<months_en.length; x++){
+                if(SelectYM[0].innerText.split(' ')[0] === months_en[x]){
+                    saveMonthIndex=months[x];
+                    break;
+                }
+           }
+
+            if(itemDates.getMonth()+1 === Number(saveMonthIndex)){
+                if(itemDates.getDate() === Number(dayitemsdata.innerText)){
+                    return true;
+                }
+            }
+
+        }
+        return false;
+    }
 
     render() {
         const {selectedYear, selectedMonth, selectedDate, selectedDay, memos} = this.state;
@@ -281,7 +330,6 @@ export default class Calendar extends Component {
             }
             return false;
         });
-
 
         return( 
             <div style={{
@@ -311,6 +359,7 @@ export default class Calendar extends Component {
                             ◀
                         </Button>
                         <h3
+                            className='SelectYear_SelectMonth'
                             style={{
                                 fontSize: 'large', 
                                 color: '#444078',
